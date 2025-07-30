@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DogBall</title>
+    <link rel="shortcut icon" href="dogArt/icone (2).png" type="image/x-icon">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background-color: black;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        canvas{
+            height: 100vh;
+            max-width: 100vw;
+            aspect-ratio: 16/9 !important;
+        }
+        img{
+            position: absolute;
+            top: 1vh;
+            left: 5vw;
+
+            height: 15vh;
+            opacity: 80%;
+        }
+
+        button{
+            all: unset;
+            position: absolute;
+            top: 2vh;
+            right: 2vw;
+
+            height: 30px;
+            width: 60px;
+
+            box-shadow: inset 0 0  5px .5px #0000005d,2px 2px 2px #0000005d , -2px -2px 2px #ffffff42;
+
+            background-color: whitesmoke;
+            padding: 5px;
+            border-radius: 25px;
+            transition: .5s;
+        }
+        button span{
+            display: block;
+            width: calc(100%/2);
+            height: 100%;
+
+            border-radius: 50%;
+            background-color: #ffdc40;
+            transition: .5s;
+        }
+    </style>
+</head>
+<body onresize="tela()">
+    <img src="dogArt/logo.png" alt="Logo">
+    <button type="checkbox" onclick="darkMode()"><span></span></button>
+    <section>
+        <canvas id="tela">Infelizmente não foi possivel carregar o jogo</canvas>
+    </section>
+    
+</body>
+<script src="classes.js"></script>
+<script src="index.js"></script>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DogBall</title>
+    <link rel="shortcut icon" href="dogArt/icone (2).png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+        integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onresize="tela()">
+    <main>
+        <!-- <img src="dogArt/logo.png" alt="Logo"> -->
+        <div id="placarContainer">
+            <h2>
+                <out id="placar1">2</out>:<span id="placar2">3</span>
+            </h2>
+        </div>
+        <div id="configContainer">
+            <label id="configLabel" for="configBtn"><i class="fa-solid fa-gear"></i></label>
+            <input id="configBtn" type="checkbox">
+            <div id="menuConfig">
+                <span>
+                    <label for="multiplayerOption">Multiplayer</label>
+                    <input type="checkbox" name="multiplayerOption" id="multiplayerOption">
+                </span>
+                <span>
+                    <label for="dificuldadeInput">Dificuldade CPU</label>
+                    <select name="dificuldadeInput" id="dificuldadeInput">
+                        <option value="5">Facil</option>
+                        <option value="30" selected>Normal</option>
+                        <option value="100">Dificil</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div id="gameOver" class="hidden">
+            <h3>CPU Wins!</h3>
+            <i onclick="location.reload()" class="fa-solid fa-rotate-right"></i>
+        </div>
+        <!-- TELA -->
+        <canvas id="tela">Infelizmente não foi possivel carregar o jogo</canvas>
+    </main>
+
+</body>
+<script src="classes.js"></script>
+<script src="index.js"></script>
+
+</html>

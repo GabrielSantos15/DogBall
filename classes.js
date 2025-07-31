@@ -60,7 +60,6 @@ class Player {
   }
 
   animacao() {
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
     const imagem = new Image();
     imagem.src = this.sprite.imagemSrc;
 
@@ -132,7 +131,7 @@ class Bola {
     this.position.x += this.velocidade.x * deltaTime;
 
     // Diminuindo a velocidade
-    const atrito = 0.15;
+    const atrito = 400;
     if (this.velocidade.x > 0) {
       this.velocidade.x -= atrito * deltaTime;
       if (this.velocidade.x < 0) this.velocidade.x = 0;
@@ -149,8 +148,8 @@ class Bola {
       this.position.y + this.raio > j1.position.y &&
       this.position.y < j1.position.y + j1.height
     ) {
-      this.velocidade.x = 200;
-      this.velocidade.y -= 5;
+      this.velocidade.x = 400;
+      this.velocidade.y -= 50;
     }
 
     if (
@@ -167,8 +166,8 @@ class Bola {
       this.position.y + this.raio > j2.position.y &&
       this.position.y < j2.position.y + j2.height
     ) {
-      this.velocidade.x = -200;
-      this.velocidade.y -= 5;
+      this.velocidade.x = -400;
+      this.velocidade.y -= 50;
     }
     if (
       this.position.x - this.raio >= j2.position.x + j2.width / 2 &&

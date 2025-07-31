@@ -23,14 +23,14 @@ function tela() {
 
 let lastTime = 0;
 //gravidade
-const gravidade = 275;
+const gravidade = 450;
 
 const altChao = canvas.height / 17;
 
 /*--------------------------------------------- iNFORMAÇÕES -------------------------------------------*/
 const jogo = {
   gameOver: false,
-  multiplayer: false,
+  multiplayer: true,
 };
 
 //jogador 1
@@ -40,7 +40,7 @@ const j1 = new Player({
   width: 70,
   position: {
     x: 0,
-    y: 0,
+    y: canvas.height - altChao - 100,
   },
   direcao: {
     direita: false,
@@ -67,7 +67,7 @@ const j2 = new Player({
   width: 70,
   position: {
     x: canvas.width - 93,
-    y: 0,
+    y: canvas.height - altChao - 100,
   },
   direcao: {
     direita: false,
@@ -151,14 +151,14 @@ function draw(currentTime = 0) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   updateGame(deltaTime)
-  
+
   requestAnimationFrame(draw);
 }
 draw();
 
 /*------------------------------------------------ UPDATE -----------------------------------------*/
 
-function updateGame(deltaTime){
+function updateGame(deltaTime) {
   // Jogador 1
   j1.update(deltaTime);
 
@@ -169,7 +169,7 @@ function updateGame(deltaTime){
   // bola
   bola.update(deltaTime);
   // gol
-  ctx.fillStyle = "#717171ff";
+  ctx.fillStyle = "#bebebeff";
   ctx.fillRect(j1Gol.position.x, j1Gol.position.y, j1Gol.width, j1Gol.height);
   ctx.fillRect(j2Gol.position.x, j2Gol.position.y, j2Gol.width, j2Gol.height);
 
@@ -208,9 +208,9 @@ function updateGame(deltaTime){
   ) {
     placar.point2 += 1;
     j1.position.x = 0;
-    j1.position.y = 0;
+    j1.position.y = canvas.height - altChao - 100;
     j2.position.x = canvas.width - j2.width;
-    j2.position.y = 0;
+    j2.position.y = canvas.height - altChao - 100;
     bola.position.y = 0;
     bola.position.x = canvas.width / 2;
     bola.velocidade.x = 0;
@@ -221,9 +221,9 @@ function updateGame(deltaTime){
   ) {
     placar.point1 += 1;
     j1.position.x = 0;
-    j1.position.y = 0;
+    j1.position.y = canvas.height - altChao - 100;
     j2.position.x = canvas.width - j2.width;
-    j2.position.y = 0;
+    j2.position.y = canvas.height - altChao - 100;
     bola.position.y = 0;
     bola.position.x = canvas.width / 2;
     bola.velocidade.x = 0;
@@ -247,7 +247,7 @@ window.addEventListener("keydown", (key) => {
     (key.code == "KeyW" || (!jogo.multiplayer && key.code == "ArrowUp")) &&
     j1.position.y + j1.height >= canvas.height - altChao
   ) {
-    j1.velocidade.y -= 10 * deltaTime;
+    j1.velocidade.y -= 250;
   }
 
   if (key.code == "KeyA" || (!jogo.multiplayer && key.code == "ArrowLeft")) {
@@ -265,7 +265,7 @@ window.addEventListener("keydown", (key) => {
       key.code == "ArrowUp" &&
       j2.position.y + j2.height >= canvas.height - altChao
     ) {
-      j2.velocidade.y -= 10 * deltaTime;
+      j2.velocidade.y -= 250;
     }
     if (key.code == "ArrowLeft") {
       j2.direcao.esquerda = true;
@@ -330,6 +330,15 @@ function cpu() {
     pular &&
     bola.velocidade.y > 0
   ) {
-    j2.velocidade.y -= 10 / deltaTime;
+    j2.velocidade.y -= 250;
+  }
+}
+
+class Sprite{
+  constructor({position,offset,width,height}){
+    this.position = position,
+    this.offset = offset,
+    this.width = width,
+    this.height
   }
 }

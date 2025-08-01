@@ -30,8 +30,9 @@ const altChao = canvas.height / 17;
 
 /*--------------------------------------------- iNFORMAÇÕES -------------------------------------------*/
 const jogo = {
+  pausado: false,
   gameOver: false,
-  multiplayer: true,
+  multiplayer: false,
 };
 
 //jogador 1
@@ -137,49 +138,32 @@ const placar = new Placar({
   point2: 0,
 });
 
-const bgLayer1 = new Image();
-bgLayer1.src = "fundo/padrao.png"; // fundo que se move
-
-const bgLayer2 = new Image();
-bgLayer2.src = "fundo/glacial_mountains.png"; // fundo parado
-
-const bgLayer3 = new Image();
-bgLayer3.src = "fundo/clouds_mg_1_lightened.png"; // fundo parado
-
 const fundo1 = new LayerBackground({
-  imagem: bgLayer1,
-  velocidade: 50, // pixels/segundo
+  imagemSrc: "fundo/sky.png",
+  velocidade: 10,
   mover: true,
 });
 
 const fundo2 = new LayerBackground({
-  imagem: bgLayer2,
+  imagemSrc: "fundo/glacial_mountains.png",
   velocidade: 0,
   mover: false,
 });
-
-const fundo3 = new LayerBackground({
-  imagem: bgLayer3,
-  velocidade: 50,
-  mover: true,
-});
-
 
 const grama = new Image();
 grama.src = "fundo/PNG/Hills Layer 05.png";
 
 /*------------------------------------------ ANIMANDO o JOGO -------------------------------------------*/
-let deltaTime
+let deltaTime;
 function draw(currentTime = 0) {
   if (jogo.gameOver) return;
-
 
   deltaTime = (currentTime - lastTime) / 1000;
   lastTime = currentTime;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  updateGame(deltaTime)
+  updateGame(deltaTime);
 
   requestAnimationFrame(draw);
 }
@@ -188,9 +172,8 @@ draw();
 /*------------------------------------------------ UPDATE -----------------------------------------*/
 
 function updateGame(deltaTime) {
-  fundo1.update(deltaTime)
-  fundo2.update(deltaTime)
-  // fundo3.update(deltaTime)
+  fundo1.update(deltaTime);
+  fundo2.update(deltaTime);
   // Jogador 1
   j1.update(deltaTime);
 
@@ -238,27 +221,13 @@ function updateGame(deltaTime) {
     bola.position.x + bola.raio <= 0 &&
     bola.position.y - bola.raio >= j1Gol.position.y
   ) {
-    placar.point2 += 1;
-    j1.position.x = 0;
-    j1.position.y = canvas.height - altChao - 100;
-    j2.position.x = canvas.width - j2.width;
-    j2.position.y = canvas.height - altChao - 100;
-    bola.position.y = 0;
-    bola.position.x = canvas.width / 2;
-    bola.velocidade.x = 0;
+    AlertaGol("esquerda");
   }
   if (
     bola.position.x - bola.raio >= canvas.width &&
     bola.position.y - bola.raio >= j2Gol.position.y
   ) {
-    placar.point1 += 1;
-    j1.position.x = 0;
-    j1.position.y = canvas.height - altChao - 100;
-    j2.position.x = canvas.width - j2.width;
-    j2.position.y = canvas.height - altChao - 100;
-    bola.position.y = 0;
-    bola.position.x = canvas.width / 2;
-    bola.velocidade.x = 0;
+    AlertaGol("direita");
   }
   placar.update();
 
@@ -268,12 +237,38 @@ function updateGame(deltaTime) {
   if (placar.point2 >= 5) {
     placar.win("CPU");
   }
+}
 
+function AlertaGol(lado) {
+  jogo.pausado = true;
+
+  if (lado === "esquerda") placar.point2++;
+  if (lado === "direita") placar.point1++;
+
+  document.querySelector("#msgGol").classList.remove("hidden");
+  // Reiniciar posições
+  j1.position.x = 0;
+  j1.position.y = canvas.height - altChao - 100;
+  j1.direcao.esquerda = false;
+  j1.direcao.direita = false;
+  j2.position.x = canvas.width - j2.width;
+  j2.position.y = canvas.height - altChao - 100;
+  j2.direcao.esquerda = false;
+  j2.direcao.direita = false;
+  bola.position.x = canvas.width / 2;
+  bola.position.y = 0;
+  bola.velocidade.x = 0;
+
+  // Espera 2 segundos e volta o jogo
+  setTimeout(() => {
+    jogo.pausado = false;
+    document.querySelector("#msgGol").classList.add("hidden");
+  }, 2000);
 }
 
 /*----------------------------------------------- TECLADO  -------------------------------------------*/
 window.addEventListener("keydown", (key) => {
-  console.log(key.code);
+  if (jogo.pausado) return;
 
   if (
     (key.code == "KeyW" || (!jogo.multiplayer && key.code == "ArrowUp")) &&
@@ -311,6 +306,8 @@ window.addEventListener("keydown", (key) => {
 });
 
 window.addEventListener("keyup", (key) => {
+  if (jogo.pausado) return;
+
   if (key.code == "KeyA" || (!jogo.multiplayer && key.code == "ArrowLeft")) {
     j1.direcao.esquerda = false;
   }
@@ -336,18 +333,19 @@ checkboxMultiplayer.addEventListener("change", () => {
 /*---------------------------------------------  CPU  -------------------------------------------*/
 
 function cpu() {
+  if (jogo.pausado) return;
+
   const agora = Date.now();
 
   const dificuldade = Number(document.querySelector("#dificuldadeInput").value);
 
-  const intervaloDecisao = 500 - (dificuldade * 4); // de 500 até 100ms de atrazo
+  const intervaloDecisao = 500 - dificuldade * 4; // de 500 até 100ms de atrazo
 
   if (agora - tempoUltimaDecisao < intervaloDecisao) return;
   tempoUltimaDecisao = agora;
 
   // Simula erros
   if (Math.random() * 100 > dificuldade) return;
-
 
   // Movimento lateral
   if (bola.position.x < j2.position.x) {
@@ -368,14 +366,5 @@ function cpu() {
     bola.velocidade.y > 0
   ) {
     j2.velocidade.y -= 250;
-  }
-}
-
-class Sprite {
-  constructor({ position, offset, width, height }) {
-    this.position = position,
-      this.offset = offset,
-      this.width = width,
-      this.height
   }
 }

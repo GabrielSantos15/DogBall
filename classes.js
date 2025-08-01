@@ -140,7 +140,6 @@ class Bola {
       if (this.velocidade.x > 0) this.velocidade.x = 0;
     }
 
-
     // Chutando a bola
     if (
       this.position.x - this.raio <= j1.position.x + j1.width &&
@@ -227,23 +226,35 @@ class Placar {
 }
 
 class LayerBackground {
-  constructor({ imagem, velocidade = 0, mover = false }) {
-    this.imagem = imagem;
+  constructor({ imagemSrc, velocidade = 0, mover = false }) {
+    this.imagem = new Image();
+    this.imagem.src = imagemSrc;
     this.velocidade = velocidade;
     this.mover = mover;
     this.x = 0;
-    this.scale = canvas.height / imagem.height;
-    this.imgLarguraEscalada = imagem.width * this.scale;
+
+    this.carregado = false;
+    this.scale = 1;
+    this.imgLarguraEscalada = 0;
+
+    this.imagem.onload = () => {
+      this.scale = canvas.height / this.imagem.height;
+      this.imgLarguraEscalada = this.imagem.width * this.scale;
+      this.carregado = true;
+    };
   }
 
   update(deltaTime) {
+    if (!this.carregado) return;
+
     if (this.mover) {
       this.x -= this.velocidade * deltaTime;
       if (this.x <= -this.imgLarguraEscalada) {
         this.x += this.imgLarguraEscalada;
       }
     }
-    this.draw()
+
+    this.draw();
   }
 
   draw() {
@@ -260,3 +271,4 @@ class LayerBackground {
     }
   }
 }
+

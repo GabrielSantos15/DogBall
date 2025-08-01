@@ -140,7 +140,7 @@ class Bola {
       if (this.velocidade.x > 0) this.velocidade.x = 0;
     }
 
-  
+
     // Chutando a bola
     if (
       this.position.x - this.raio <= j1.position.x + j1.width &&
@@ -148,8 +148,8 @@ class Bola {
       this.position.y + this.raio > j1.position.y &&
       this.position.y < j1.position.y + j1.height
     ) {
-      this.velocidade.x = 400;
-      this.velocidade.y -= 50;
+      this.velocidade.x = 500;
+      this.velocidade.y -= 30;
     }
 
     if (
@@ -166,8 +166,8 @@ class Bola {
       this.position.y + this.raio > j2.position.y &&
       this.position.y < j2.position.y + j2.height
     ) {
-      this.velocidade.x = -400;
-      this.velocidade.y -= 50;
+      this.velocidade.x = -500;
+      this.velocidade.y -= 30;
     }
     if (
       this.position.x - this.raio >= j2.position.x + j2.width / 2 &&
@@ -181,7 +181,7 @@ class Bola {
     // Colisao com a parede
 
     if (
-       this.position.x + this.raio >= canvas.width &&
+      this.position.x + this.raio >= canvas.width &&
       this.position.y - this.raio < j2Gol.position.y
     ) {
       this.position.x = canvas.width - 1 - this.raio;
@@ -223,5 +223,40 @@ class Placar {
     gameOverContainer.classList.remove("hidden");
     gameOverText.textContent = `${jogador} Wins`;
     jogo.gameOver = true;
+  }
+}
+
+class LayerBackground {
+  constructor({ imagem, velocidade = 0, mover = false }) {
+    this.imagem = imagem;
+    this.velocidade = velocidade;
+    this.mover = mover;
+    this.x = 0;
+    this.scale = canvas.height / imagem.height;
+    this.imgLarguraEscalada = imagem.width * this.scale;
+  }
+
+  update(deltaTime) {
+    if (this.mover) {
+      this.x -= this.velocidade * deltaTime;
+      if (this.x <= -this.imgLarguraEscalada) {
+        this.x += this.imgLarguraEscalada;
+      }
+    }
+    this.draw()
+  }
+
+  draw() {
+    const quantas = Math.ceil(canvas.width / this.imgLarguraEscalada) + 1;
+
+    for (let i = 0; i < quantas; i++) {
+      ctx.drawImage(
+        this.imagem,
+        this.x + i * this.imgLarguraEscalada,
+        0,
+        this.imgLarguraEscalada,
+        canvas.height
+      );
+    }
   }
 }

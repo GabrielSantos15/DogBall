@@ -22,8 +22,9 @@ function tela() {
 }
 
 let lastTime = 0;
+let tempoUltimaDecisao = 0;
 //gravidade
-const gravidade = 450;
+const gravidade = 500;
 
 const altChao = canvas.height / 17;
 
@@ -92,7 +93,7 @@ const j2 = new Player({
 const bola = new Bola({
   raio: 12,
   vel: 3,
-  color: "#f55",
+  color: "#f00",
   position: {
     x: canvas.width / 2,
     y: 50,
@@ -136,6 +137,34 @@ const placar = new Placar({
   point2: 0,
 });
 
+const bgLayer1 = new Image();
+bgLayer1.src = "fundo/padrao.png"; // fundo que se move
+
+const bgLayer2 = new Image();
+bgLayer2.src = "fundo/glacial_mountains.png"; // fundo parado
+
+const bgLayer3 = new Image();
+bgLayer3.src = "fundo/clouds_mg_1_lightened.png"; // fundo parado
+
+const fundo1 = new LayerBackground({
+  imagem: bgLayer1,
+  velocidade: 50, // pixels/segundo
+  mover: true,
+});
+
+const fundo2 = new LayerBackground({
+  imagem: bgLayer2,
+  velocidade: 0,
+  mover: false,
+});
+
+const fundo3 = new LayerBackground({
+  imagem: bgLayer3,
+  velocidade: 50,
+  mover: true,
+});
+
+
 const grama = new Image();
 grama.src = "fundo/PNG/Hills Layer 05.png";
 
@@ -159,6 +188,9 @@ draw();
 /*------------------------------------------------ UPDATE -----------------------------------------*/
 
 function updateGame(deltaTime) {
+  fundo1.update(deltaTime)
+  fundo2.update(deltaTime)
+  // fundo3.update(deltaTime)
   // Jogador 1
   j1.update(deltaTime);
 
@@ -169,7 +201,7 @@ function updateGame(deltaTime) {
   // bola
   bola.update(deltaTime);
   // gol
-  ctx.fillStyle = "#bebebeff";
+  ctx.fillStyle = "#eee";
   ctx.fillRect(j1Gol.position.x, j1Gol.position.y, j1Gol.width, j1Gol.height);
   ctx.fillRect(j2Gol.position.x, j2Gol.position.y, j2Gol.width, j2Gol.height);
 
@@ -304,11 +336,18 @@ checkboxMultiplayer.addEventListener("change", () => {
 /*---------------------------------------------  CPU  -------------------------------------------*/
 
 function cpu() {
-  // Dificuldade: 0 (fácil) a 100 (difícil)
+  const agora = Date.now();
+
   const dificuldade = Number(document.querySelector("#dificuldadeInput").value);
 
-  // Simula erro: quanto menor a dificuldade, maior a chance de falhar
+  const intervaloDecisao = 500 - (dificuldade * 4); // de 500 até 100ms de atrazo
+
+  if (agora - tempoUltimaDecisao < intervaloDecisao) return;
+  tempoUltimaDecisao = agora;
+
+  // Simula erros
   if (Math.random() * 100 > dificuldade) return;
+
 
   // Movimento lateral
   if (bola.position.x < j2.position.x) {
@@ -321,24 +360,22 @@ function cpu() {
     j2.inverter = false;
   }
 
-  // Salto: só salta se a bola estiver descendo acima dele
-  const pular = j2.position.y + j2.height >= canvas.height - altChao;
-
+  // Salto
   if (
     bola.position.y < j2.position.y &&
     bola.position.y > j2.position.y - 200 &&
-    pular &&
+    j2.position.y + j2.height >= canvas.height - altChao &&
     bola.velocidade.y > 0
   ) {
     j2.velocidade.y -= 250;
   }
 }
 
-class Sprite{
-  constructor({position,offset,width,height}){
+class Sprite {
+  constructor({ position, offset, width, height }) {
     this.position = position,
-    this.offset = offset,
-    this.width = width,
-    this.height
+      this.offset = offset,
+      this.width = width,
+      this.height
   }
 }

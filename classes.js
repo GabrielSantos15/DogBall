@@ -51,6 +51,7 @@ class Player {
       canvas.height - altChao
     ) {
       this.velocidade.y = 0;
+      this.position.y = canvas.height - altChao - this.height;
     } else {
       this.velocidade.y += gravidade * deltaTime;
     }
@@ -124,6 +125,7 @@ class Bola {
       canvas.height - altChao
     ) {
       this.velocidade.y = 0;
+      this.position.y = canvas.height - altChao - this.raio;
     } else {
       this.velocidade.y += gravidade * deltaTime;
     }

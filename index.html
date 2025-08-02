@@ -14,19 +14,9 @@
 
 <body onresize="tela()">
     <main>
-        <div id="msgGol" class="hidden">
-            <h3>GOOOOLLLLL!!!!!!</h3>
-        </div>
-        <!-- <img src="dogArt/logo.png" alt="Logo"> -->
-        <div id="placarContainer">
-            <h2>
-                <out id="placar1">2</out>:<span id="placar2">3</span>
-            </h2>
-        </div>
-        <div id="configContainer">
-            <label id="configLabel" for="configBtn"><i class="fa-solid fa-gear"></i></label>
-            <input id="configBtn" type="checkbox">
-            <div id="menuConfig">
+        <section id="menu">
+            <img src="dogArt/logo.png" alt="Logo do jogo">
+            <form id="menuConfig">
                 <span>
                     <label for="multiplayerOption">Multiplayer</label>
                     <input type="checkbox" name="multiplayerOption" id="multiplayerOption">
@@ -39,7 +29,16 @@
                         <option value="100">Dificil</option>
                     </select>
                 </span>
-            </div>
+                <button>Jogar</button>
+            </form>
+        </section>
+        <div id="msgGol" class="hidden">
+            <h3>GOOOOLLLLL!!!!!!</h3>
+        </div>
+        <div id="placarContainer">
+            <h2>
+                <out id="placar1">2</out>:<span id="placar2">3</span>
+            </h2>
         </div>
         <div id="gameOver" class="hidden">
             <h3>CPU Wins!</h3>

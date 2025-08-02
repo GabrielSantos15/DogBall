@@ -7,22 +7,9 @@ const ctx = canvas.getContext("2d");
 canvas.width = 1024;
 canvas.height = 576;
 
-function tela() {
-  j1.position.x = 0;
-  j1.position.y = 0;
-  j1Gol.position.x = 0;
-  j1Gol.position.y = canvas.height - j1Gol.height;
-  j2.position.x = canvas.width - j2.width;
-  j2.position.y = 0;
-  j2Gol.position.x = canvas.width - j2Gol.width;
-  j2Gol.position.y = canvas.height - j2Gol.height;
-  bola.position.y = 0;
-  // fundo.width = canvas.width;
-  // fundo.height = canvas.height;
-}
-
 let lastTime = 0;
 let tempoUltimaDecisao = 0;
+let dificuldadeCpu
 //gravidade
 const gravidade = 500;
 
@@ -30,7 +17,7 @@ const altChao = canvas.height / 17;
 
 /*--------------------------------------------- iNFORMAÇÕES -------------------------------------------*/
 const jogo = {
-  pausado: false,
+  pausado: true,
   gameOver: false,
   multiplayer: false,
 };
@@ -153,7 +140,22 @@ const fundo2 = new LayerBackground({
 const grama = new Image();
 grama.src = "fundo/PNG/Hills Layer 05.png";
 
+/*------------------------------------------ Iniciando o JOGO -------------------------------------------*/
+document.querySelector("#menuConfig").addEventListener("submit",(event)=>{
+  event.preventDefault()
+  document.querySelector("#menu").style.display = "none"
+  jogo.multiplayer = document.querySelector("#multiplayerOption").checked
+  dificuldadeCpu =  Number(document.querySelector("#dificuldadeInput").value);
+  draw();
+
+    setTimeout(() => {
+    jogo.pausado = false;
+    document.querySelector("#msgGol").classList.add("hidden");
+  }, 2000);
+})
+
 /*------------------------------------------ ANIMANDO o JOGO -------------------------------------------*/
+
 let deltaTime;
 function draw(currentTime = 0) {
   if (jogo.gameOver) return;
@@ -167,7 +169,6 @@ function draw(currentTime = 0) {
 
   requestAnimationFrame(draw);
 }
-draw();
 
 /*------------------------------------------------ UPDATE -----------------------------------------*/
 
@@ -183,6 +184,7 @@ function updateGame(deltaTime) {
 
   // bola
   bola.update(deltaTime);
+  
   // gol
   ctx.fillStyle = "#eee";
   ctx.fillRect(j1Gol.position.x, j1Gol.position.y, j1Gol.width, j1Gol.height);
@@ -235,7 +237,7 @@ function updateGame(deltaTime) {
     placar.win("Player 1");
   }
   if (placar.point2 >= 5) {
-    placar.win("CPU");
+    jogo.multiplayer ?  placar.win("Player 2") : placar.win("CPU");
   }
 }
 
@@ -322,14 +324,6 @@ window.addEventListener("keyup", (key) => {
   }
 });
 
-const checkboxMultiplayer = document.querySelector("#multiplayerOption");
-
-checkboxMultiplayer.addEventListener("change", () => {
-  jogo.multiplayer = checkboxMultiplayer.checked;
-  j2.direcao.direita = false;
-  j2.direcao.esquerda = false;
-});
-
 /*---------------------------------------------  CPU  -------------------------------------------*/
 
 function cpu() {
@@ -337,15 +331,13 @@ function cpu() {
 
   const agora = Date.now();
 
-  const dificuldade = Number(document.querySelector("#dificuldadeInput").value);
-
-  const intervaloDecisao = 500 - dificuldade * 4; // de 500 até 100ms de atrazo
+  const intervaloDecisao = 500 - dificuldadeCpu * 4; // de 500 até 100ms de atrazo
 
   if (agora - tempoUltimaDecisao < intervaloDecisao) return;
   tempoUltimaDecisao = agora;
 
   // Simula erros
-  if (Math.random() * 100 > dificuldade) return;
+  if (Math.random() * 100 > dificuldadeCpu) return;
 
   // Movimento lateral
   if (bola.position.x < j2.position.x) {
